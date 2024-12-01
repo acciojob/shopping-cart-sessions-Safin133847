@@ -1,6 +1,3 @@
-// This is the boilerplate code given for you
-// You can modify this code
-// Product data
 const products = [
   { id: 1, name: "Product 1", price: 10 },
   { id: 2, name: "Product 2", price: 20 },
@@ -9,30 +6,63 @@ const products = [
   { id: 5, name: "Product 5", price: 50 },
 ];
 
-// DOM elements
-const productList = document.getElementById("product-list");
-
-// Render product list
 function renderProducts() {
+  const productList = document.getElementById("product-list");
+  productList.innerHTML = ''; // Clear existing product list
+
   products.forEach((product) => {
     const li = document.createElement("li");
-    li.innerHTML = `${product.name} - $${product.price} <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>`;
+    li.innerHTML = `${product.name} - $${product.price} 
+      <button onclick="addToCart(${product.id})">Add to Cart</button>`;
     productList.appendChild(li);
   });
 }
 
-// Render cart list
-function renderCart() {}
+function renderCart() {
+  const cartList = document.getElementById("cart-list");
+  const cart = getCartFromSessionStorage();
+  
+  cartList.innerHTML = ''; // Clear existing cart list
 
-// Add item to cart
-function addToCart(productId) {}
+  if (cart.length === 0) {
+    cartList.innerHTML = '<li>Your cart is empty.</li>';
+  } else {
+    cart.forEach((item) => {
+      const li = document.createElement("li");
+      li.innerHTML = `${item.name} - $${item.price}`;
+      cartList.appendChild(li);
+    });
+  }
+}
 
-// Remove item from cart
-function removeFromCart(productId) {}
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  
+  const cart = getCartFromSessionStorage();
 
-// Clear cart
-function clearCart() {}
+  cart.push(product);
 
-// Initial render
-renderProducts();
-renderCart();
+  sessionStorage.setItem('cart', JSON.stringify(cart));
+
+  renderCart();
+}
+
+function getCartFromSessionStorage() {
+  const cart = sessionStorage.getItem('cart');
+  return cart ? JSON.parse(cart) : [];
+}
+
+function clearCart() {
+  sessionStorage.removeItem('cart');
+
+  renderCart();
+}
+
+document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
+
+function initializePage() {
+  renderProducts();
+  renderCart();
+}
+
+window.onload = initializePage;
