@@ -25,11 +25,10 @@ function renderProducts() {
 // Function to render the cart from sessionStorage
 function renderCart() {
   const cart = getCartFromSession();
-  cartList.innerHTML = ""; // Clear the existing cart list
+  cartList.innerHTML = "";
   cart.forEach((product) => {
     const li = document.createElement("li");
-    li.innerHTML = `${product.name} - $${product.price} 
-      <button class="remove-from-cart-btn" data-id="${product.id}">Remove</button>`;
+    li.innerHTML = `${product.name} x ${product.quantity} - $${product.price * product.quantity} <button class="remove-from-cart-btn" data-id="${(link unavailable)}">Remove</button>`;
     cartList.appendChild(li);
   });
 }
@@ -47,13 +46,15 @@ function saveCartToSession(cart) {
 
 // Function to add an item to the cart (without quantity)
 function addToCart(productId) {
-  const product = products.find((product) => product.id === productId);
+  const product = products.find((product) => (link unavailable) === productId);
   if (!product) return;
-
   const cart = getCartFromSession();
-  // Add the product to the cart without modifying the quantity
-  cart.push(product);
-
+  const existingProductIndex = cart.findIndex((item) => (link unavailable) === (link unavailable));
+  if (existingProductIndex !== -1) {
+    cart[existingProductIndex].quantity = (cart[existingProductIndex].quantity || 1) + 1;
+  } else {
+    cart.push({ ...product, quantity: 1 });
+  }
   saveCartToSession(cart);
   renderCart();
 }
@@ -61,8 +62,15 @@ function addToCart(productId) {
 // Function to remove an item from the cart
 function removeFromCart(productId) {
   const cart = getCartFromSession();
-  const updatedCart = cart.filter((product) => product.id !== productId);
-  saveCartToSession(updatedCart);
+  const existingProductIndex = cart.findIndex((item) => (link unavailable) === productId);
+  if (existingProductIndex !== -1) {
+    if (cart[existingProductIndex].quantity > 1) {
+      cart[existingProductIndex].quantity--;
+    } else {
+      cart.splice(existingProductIndex, 1);
+    }
+  }
+  saveCartToSession(cart);
   renderCart();
 }
 
