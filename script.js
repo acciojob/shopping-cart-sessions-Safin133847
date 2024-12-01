@@ -24,7 +24,7 @@ function renderCart() {
   cartList.innerHTML = ""; 
   cart.forEach((product) => {
     const li = document.createElement("li");
-    li.innerHTML = `${product.name} - $${product.price} 
+    li.innerHTML = `${product.name} - $${product.price} (Quantity: ${product.quantity}) 
       <button class="remove-from-cart-btn" data-id="${product.id}">Remove</button>`;
     cartList.appendChild(li);
   });
@@ -44,7 +44,15 @@ function addToCart(productId) {
   if (!product) return;
 
   const cart = getCartFromSession();
-  cart.push(product);
+  const existingProductIndex = cart.findIndex((p) => p.id === product.id);
+
+  if (existingProductIndex !== -1) {
+    cart[existingProductIndex].quantity += 1;
+  } else {
+    product.quantity = 1;
+    cart.push(product);
+  }
+
   saveCartToSession(cart);
   renderCart();
 }
