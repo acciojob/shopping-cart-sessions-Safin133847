@@ -45,13 +45,13 @@ function saveCartToSession(cart) {
   sessionStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// Function to add an item to the cart (without quantity)
+// Function to add an item to the cart (ensure multiple instances of the same product)
 function addToCart(productId) {
   const product = products.find((product) => product.id === productId);
   if (!product) return;
 
   const cart = getCartFromSession();
-  // Add the product to the cart without modifying the quantity
+  // Add the product to the cart as a new entry each time
   cart.push(product);
 
   saveCartToSession(cart);
