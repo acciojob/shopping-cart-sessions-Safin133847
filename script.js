@@ -11,6 +11,7 @@ const products = [
 // Render products to the product list
 const renderProducts = () => {
   const productList = document.getElementById('product-list');
+  productList.innerHTML = ''; // Clear previous products
   products.forEach(product => {
     const li = document.createElement('li');
     li.innerHTML = `${product.name} - $${product.price} <button onclick="addToCart(${product.id})">Add to Cart</button>`;
@@ -22,11 +23,13 @@ const renderProducts = () => {
 const addToCart = (productId) => {
   const cart = getCartFromSession();
   const product = products.find(p => p.id === productId);
-  
+
   // Check if the product is already in the cart
-  const existingProduct = cart.find(p => p.id === productId);
-  if (!existingProduct) {
-    cart.push(product);
+  const existingProductIndex = cart.findIndex(p => p.id === productId);
+  if (existingProductIndex !== -1) {
+    cart[existingProductIndex].quantity += 1; // Increment quantity if product is already in the cart
+  } else {
+    cart.push({ ...product, quantity: 1 });
   }
 
   sessionStorage.setItem('cart', JSON.stringify(cart));
@@ -40,7 +43,7 @@ const renderCart = () => {
   cartList.innerHTML = ''; // Clear previous cart
   cart.forEach(product => {
     const li = document.createElement('li');
-    li.innerHTML = `${product.name} - $${product.price}`;
+    li.innerHTML = `${product.name} - $${product.price} (Quantity: ${product.quantity})`;
     cartList.appendChild(li);
   });
 };
