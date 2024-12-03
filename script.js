@@ -1,5 +1,3 @@
-// script.js
-
 const products = [
   { id: 1, name: "Product 1", price: 10 },
   { id: 2, name: "Product 2", price: 20 },
@@ -8,10 +6,8 @@ const products = [
   { id: 5, name: "Product 5", price: 50 },
 ];
 
-// Render products to the product list
 const renderProducts = () => {
   const productList = document.getElementById('product-list');
-  productList.innerHTML = ''; // Clear previous products
   products.forEach(product => {
     const li = document.createElement('li');
     li.innerHTML = `${product.name} - $${product.price} <button onclick="addToCart(${product.id})">Add to Cart</button>`;
@@ -19,31 +15,23 @@ const renderProducts = () => {
   });
 };
 
-// Add product to the cart
 const addToCart = (productId) => {
   const cart = getCartFromSession();
   const product = products.find(p => p.id === productId);
-
-  // Check if the product is already in the cart
-  const existingProductIndex = cart.findIndex(p => p.id === productId);
-  if (existingProductIndex !== -1) {
-    cart[existingProductIndex].quantity += 1; // Increment quantity if product is already in the cart
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
-
+  
+  cart.push(product);
+  
   sessionStorage.setItem('cart', JSON.stringify(cart));
   renderCart();
 };
 
-// Render cart to the cart list
 const renderCart = () => {
   const cartList = document.getElementById('cart-list');
   const cart = getCartFromSession();
-  cartList.innerHTML = ''; // Clear previous cart
+  cartList.innerHTML = ''; 
   cart.forEach(product => {
     const li = document.createElement('li');
-    li.innerHTML = `${product.name} - $${product.price} (Quantity: ${product.quantity})`;
+    li.innerHTML = `${product.name} - $${product.price}`;
     cartList.appendChild(li);
   });
 };
@@ -54,12 +42,10 @@ const getCartFromSession = () => {
   return cart ? JSON.parse(cart) : [];
 };
 
-// Clear the cart
 document.getElementById('clear-cart-btn').addEventListener('click', () => {
   sessionStorage.removeItem('cart');
   renderCart();
 });
 
-// Initial render
 renderProducts();
 renderCart();
