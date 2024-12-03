@@ -1,3 +1,5 @@
+// script.js
+
 const products = [
   { id: 1, name: "Product 1", price: 10 },
   { id: 2, name: "Product 2", price: 20 },
@@ -6,6 +8,7 @@ const products = [
   { id: 5, name: "Product 5", price: 50 },
 ];
 
+// Render products to the product list
 const renderProducts = () => {
   const productList = document.getElementById('product-list');
   products.forEach(product => {
@@ -15,14 +18,22 @@ const renderProducts = () => {
   });
 };
 
+// Add product to the cart
 const addToCart = (productId) => {
   const cart = getCartFromSession();
   const product = products.find(p => p.id === productId);
-  cart.push(product);
+  
+  // Check if the product is already in the cart
+  const existingProduct = cart.find(p => p.id === productId);
+  if (!existingProduct) {
+    cart.push(product);
+  }
+
   sessionStorage.setItem('cart', JSON.stringify(cart));
   renderCart();
 };
 
+// Render cart to the cart list
 const renderCart = () => {
   const cartList = document.getElementById('cart-list');
   const cart = getCartFromSession();
@@ -34,15 +45,18 @@ const renderCart = () => {
   });
 };
 
+// Get cart data from session storage
 const getCartFromSession = () => {
   const cart = sessionStorage.getItem('cart');
   return cart ? JSON.parse(cart) : [];
 };
 
+// Clear the cart
 document.getElementById('clear-cart-btn').addEventListener('click', () => {
   sessionStorage.removeItem('cart');
   renderCart();
 });
 
+// Initial render
 renderProducts();
 renderCart();
